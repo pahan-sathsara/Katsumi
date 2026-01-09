@@ -314,9 +314,9 @@ export function Client({ sock, store }) {
 					return parsePhoneNumber("+" + id.split("@")[0]);
 				}
 				return (
-					contact.name ||
-					contact.notify ||
-					contact.verifiedName ||
+					contact?.name ||
+					contact?.notify ||
+					contact?.verifiedName ||
 					parsePhoneNumber("+" + id.split("@")[0])
 				);
 			},

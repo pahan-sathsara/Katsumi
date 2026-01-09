@@ -79,11 +79,14 @@ export default {
 					],
 				};
 
-				const response = await fetch("https://qc.pdi.moe/generate", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(request),
-				});
+				const response = await fetch(
+					"https://qc.chitoge.win/generate",
+					{
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify(request),
+					}
+				);
 
 				if (!response.ok) {
 					return m.reply("Failed to generate sticker.");
@@ -168,7 +171,7 @@ export default {
 		}
 
 		if (input.length > 0 && isMedia) {
-			const url = await uploader.providers.catbox.upload(mediaBuffer);
+			const url = await uploader.providers.freeimage.upload(mediaBuffer);
 			const res = await fetch(
 				`https://api.memegen.link/images/custom/${encodeURIComponent(teks1)}/${encodeURIComponent(teks2)}.png?background=${url}`,
 				{ responseType: "arraybuffer" }

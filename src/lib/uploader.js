@@ -97,59 +97,6 @@ class FreeImageProvider extends Provider {
 }
 
 /**
- * @class TmpFilesProvider
- * @classdesc Upload a buffer to tmpfiles.org
- * @extends Provider
- */
-class TmpFilesProvider extends Provider {
-	/**
-	 * Upload a buffer to tmpfiles.org
-	 * @param {Buffer} buffer - The buffer to upload
-	 * @returns {Promise<string>} The URL of the uploaded file
-	 */
-	async upload(buffer) {
-		const { mime, ext } = await fileTypeFromBuffer(buffer);
-		const blob = new Blob([buffer], { type: mime });
-		const form = this.form("file", blob, `file.${ext}`);
-		const { data } = await axios.post(
-			"https://tmpfiles.org/api/v1/upload",
-			form,
-			{
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			}
-		);
-		const url = data.data.url.match(/https:\/\/tmpfiles.org\/(.*)/)[1];
-		return "https://tmpfiles.org/dl/" + url;
-	}
-}
-
-/**
- * @class NetorareProvider
- * @classdesc Upload a buffer to storage.netorare.codes
- * @extends Provider
- */
-class NetorareProvider extends Provider {
-	/**
-	 * Upload a buffer to storage.netorare.codes
-	 * @param {Buffer} buffer - The buffer to upload
-	 * @returns {Promise<string>} The URL of the uploaded file
-	 */
-	async upload(buffer) {
-		const { mime, ext } = await fileTypeFromBuffer(buffer);
-		const blob = new Blob([buffer], { type: mime });
-		const form = this.form("file", blob, `file.${ext}`);
-		const { data } = await axios.post("https://scdn.pdi.moe/upload", form, {
-			headers: {
-				"Content-Type": "multipart/form-data",
-			},
-		});
-		return "https://scdn.pdi.moe" + data.result.downloadUrl;
-	}
-}
-
-/**
  * @class Pomf2Provider
  * @classdesc Upload a buffer to pomf2.lain.la
  * @extends Provider
@@ -265,38 +212,6 @@ class ImgBBProvider extends Provider {
 }
 
 /**
- * @class PasteboardProvider
- * @classdesc Upload a buffer to pai.sh
- * @extends Provider
- */
-class PasteboardProvider extends Provider {
-	/**
-	 * Upload a buffer to PasteboardProvider
-	 * @param {Buffer} buffer - The buffer to upload
-	 * @returns {Promise<string>} The URL of the uploaded file
-	 */
-	async upload(buffer) {
-		const { mime, ext } = await fileTypeFromBuffer(buffer);
-		const blob = new Blob([buffer], { type: mime });
-		const form = this.form("file", blob, `image.${ext}`);
-		form.set("cb", "-9");
-		const { data } = await axios.post(
-			"https://pasteboard.co/upload",
-			form,
-			{
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			}
-		);
-		if (!data.url) {
-			throw new Error(data);
-		}
-		return "https://pasteboard.co/" + data.fileName;
-	}
-}
-
-/**
  * @class Pixhost
  * @classdesc Upload a buffer to pixhost.to
  * @extends Provider
@@ -355,13 +270,10 @@ class Uploader {
 		this.providers = {
 			quax: new QuaxProvider(),
 			freeimage: new FreeImageProvider(),
-			tmpfiles: new TmpFilesProvider(),
-			netorare: new NetorareProvider(),
 			pomf2: new Pomf2Provider(),
 			uguu: new UguuProvider(),
 			catbox: new CatboxProvider(),
 			imgBB: new ImgBBProvider(),
-			pasteBoard: new PasteboardProvider(),
 			pixHost: new Pixhost(),
 		};
 	}
@@ -404,15 +316,5 @@ const uploader = new Uploader();
 
 export default uploader;
 
-export const {
-	quax,
-	freeimage,
-	tmpfiles,
-	netorare,
-	pomf2,
-	uguu,
-	catbox,
-	imgBB,
-	pasteBoard,
-	pixHost,
-} = uploader.providers;
+export const { quax, freeimage, pomf2, uguu, catbox, imgBB, pixHost } =
+	uploader.providers;
